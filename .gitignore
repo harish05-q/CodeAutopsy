@@ -38,7 +38,7 @@ Thumbs.db
 docker-compose.override.yml
 
 # Test scripts (local only)
-test_*.py
+
 
 # Generated artifacts
 implementation_plan.md
