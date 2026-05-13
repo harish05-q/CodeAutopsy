@@ -29,16 +29,19 @@ _model = None
 
 def _get_model():  # type: ignore[no-untyped-def]
     """
-    Lazy-load the sentence-transformer model.
-
-    Cached at module level so it's only loaded once per process.
+    Lazy-load the sentence-transformer model with low memory settings.
     """
     global _model
     if _model is None:
-        logger.info("loading_embedding_model", model="all-MiniLM-L6-v2")
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-        logger.info("embedding_model_loaded")
+        try:
+            logger.info("loading_embedding_model", model="all-MiniLM-L6-v2")
+            from sentence_transformers import SentenceTransformer
+            # Force CPU and single-thread for low-memory environments
+            _model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+            logger.info("embedding_model_loaded")
+        except Exception as e:
+            logger.error("embedding_model_load_failed", error=str(e))
+            return None
     return _model
 
 
@@ -119,6 +122,10 @@ def generate_embeddings(
     model = _get_model()
     store = FaissStore(dimension=embedding_dim)
 
+    if model is None:
+        logger.warning("skipping_embeddings_due_to_model_load_failure")
+        return store, {"functions": 0, "classes": 0, "modules": 0, "total": 0, "status": "skipped"}
+
     texts: list[str] = []
     metadata_list: list[dict[str, str]] = []
 
@@ -163,9 +170,10 @@ def generate_embeddings(
         logger.warning("no_texts_to_embed")
         return store, {"functions": 0, "classes": 0, "modules": 0, "total": 0}
 
-    # Generate embeddings in batch
+    # Generate embeddings in small batches to save RAM
     logger.info("generating_embeddings", count=len(texts))
-    embeddings = model.encode(texts, show_progress_bar=False, batch_size=64)
+    # Reduced batch size for low-memory environments
+    embeddings = model.encode(texts, show_progress_bar=False, batch_size=16)
     embeddings_np = np.array(embeddings, dtype=np.float32)
 
     # Add to FAISS store
