@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Data (generated at runtime)
+data/
+*.db
+
+# Node
+node_modules/
+.next/
+out/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Test scripts (local only)
+test_*.py
+
+# Generated artifacts
+implementation_plan.md
+task.md
+walkthrough.md
