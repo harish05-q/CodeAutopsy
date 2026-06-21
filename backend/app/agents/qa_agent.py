@@ -3,9 +3,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import numpy as np
-import faiss
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 from groq import Groq
 from backend.app.config import settings
 
@@ -30,8 +28,9 @@ class QaAgent:
         self._model = None
 
     @property
-    def model(self) -> SentenceTransformer:
+    def model(self) -> "SentenceTransformer":
         if self._model is None:
+            from sentence_transformers import SentenceTransformer
             self._model = SentenceTransformer(settings.EMBEDDING_MODEL)
         return self._model
 
@@ -87,6 +86,7 @@ class QaAgent:
             )
 
         # 1. Load FAISS flat index and chunks metadata
+        import faiss
         index = faiss.read_index(str(index_path))
         with open(chunks_path, "r", encoding="utf-8") as f:
             chunks = json.load(f)

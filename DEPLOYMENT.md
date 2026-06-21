@@ -55,7 +55,7 @@ Render allows you to host Python ASGI applications for free.
      ```
    - **Start Command**:
      ```bash
-     PYTHONPATH=. uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+     python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 10000
      ```
 5. Click **Advanced** to add **Environment Variables**:
    - `DATABASE_URL`: `sqlite+aiosqlite:////tmp/codeautopsy.db` (Render's free tier local disk is read-only in some directories, but `/tmp` is always writable).

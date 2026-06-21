@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import numpy as np
-import faiss
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 
 class CodeChunk(BaseModel):
     file_path: str
@@ -21,8 +19,9 @@ class EmbeddingAgent:
         self._model = None
 
     @property
-    def model(self) -> SentenceTransformer:
+    def model(self) -> "SentenceTransformer":
         if self._model is None:
+            from sentence_transformers import SentenceTransformer
             self._model = SentenceTransformer(self.model_name)
         return self._model
 
@@ -126,6 +125,7 @@ class EmbeddingAgent:
         embeddings = self.model.encode(texts, show_progress_bar=False)
 
         # 3. Create and Write FAISS Index
+        import faiss
         embeddings_np = np.array(embeddings).astype("float32")
         dimension = embeddings_np.shape[1]
         
