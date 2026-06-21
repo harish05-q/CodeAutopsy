@@ -1,0 +1,64 @@
+# -----------------------------
+# Python
+# -----------------------------
+backend/venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+backend/.env
+.env
+.env.*
+!.env.example
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Analysis output
+analysis/
+
+# -----------------------------
+# Next.js / Node
+# -----------------------------
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------------------
+# IDE / OS
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Testing
+# -----------------------------
+coverage/
+
+# -----------------------------
+# TypeScript
+# -----------------------------
+*.tsbuildinfo
+next-env.d.ts
