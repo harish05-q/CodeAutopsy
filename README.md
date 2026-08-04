@@ -20,6 +20,4 @@ Open `http://localhost:3000`.
 - [Data models](docs/DATA_MODELS.md)
 - [Development roadmap](docs/ROADMAP.md)
 
-## Palette and interaction direction
 
-The interface deliberately avoids a generic dark AI dashboard. Its visual system uses warm paper, ember red, acid yellow, mint and peach; tactile shadows and editorial typography make the experience feel like a collaborative field notebook. Every major screen is responsive and interactive, including case submission progress, graph inspection, onboarding checklists, repository QA and command navigation.
