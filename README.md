@@ -18,6 +18,7 @@
   <img src="https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=flat-square" alt="SQLAlchemy"/>
   <img src="https://img.shields.io/badge/FAISS-vector_search-00A0DC?style=flat-square" alt="FAISS"/>
   <img src="https://img.shields.io/badge/Groq-LLM-F55036?style=flat-square" alt="Groq"/>
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"/>
 </p>
 
 <p>
@@ -40,8 +41,10 @@
 
 <p align="center">
   <img src="docs/screenshots/overview.png" alt="CodeAutopsy dashboard overview" width="100%"/>
-  <br/>
-  <sub><em>Replace with a real screenshot or GIF of the dashboard — see <a href="#-adding-screenshots">Adding Screenshots</a> below.</em></sub>
+</p>
+
+<p align="center">
+  <sub><em>👆 Drop a hero screenshot or GIF at <code>docs/screenshots/overview.png</code> — see <a href="#-screenshots">Screenshots</a> below.</em></sub>
 </p>
 
 ---
@@ -238,15 +241,46 @@ cd backend && pytest
 
 The interactive dashboard, graph views, and full API/data-model contracts are complete, and the FastAPI backend — clone → parse → graph → risk → embed → author → chat — is implemented end to end and live in production. See [`docs/ROADMAP.md`](docs/ROADMAP.md) for what's next.
 
-## 🖼️ Adding screenshots
+## 🖼️ Screenshots
 
-This README references images under `docs/screenshots/` (e.g. `overview.png`, `graph-view.png`, `chat.png`) that aren't generated automatically. To finish the visual polish:
+<table>
+<tr>
+<td width="50%" align="center">
+<img src="docs/screenshots/overview.png" alt="Overview" width="100%"/>
+<br/><sub><strong>Overview</strong> — repository stats, architecture summary, maintainability</sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/screenshots/dependency-graph.png" alt="Dependency graph" width="100%"/>
+<br/><sub><strong>Dependency graph</strong> — module import map</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="docs/screenshots/call-graph.png" alt="Call graph" width="100%"/>
+<br/><sub><strong>Call graph</strong> — approximate function call chains</sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/screenshots/architecture.png" alt="Architecture report" width="100%"/>
+<br/><sub><strong>Architecture</strong> — inferred pattern with confidence & evidence</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="docs/screenshots/risks.png" alt="Risk report" width="100%"/>
+<br/><sub><strong>Risk report</strong> — maintainability score & hotspots</sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/screenshots/chat.png" alt="Grounded chat" width="100%"/>
+<br/><sub><strong>Chat</strong> — source-grounded Q&A with citations</sub>
+</td>
+</tr>
+</table>
 
-1. Run the app locally or use the [live demo](https://code-autopsy-nine.vercel.app), analyze a real repo, and screenshot the Overview, Graph, and Chat views.
-2. Save them into `docs/screenshots/`.
-3. They'll render automatically at the top of this README and wherever else you reference them.
+**To fill these in:**
 
-A short screen-recording GIF of an end-to-end run (paste URL → live progress → graphs) is the single highest-impact addition here.
+1. Run the app locally or use the [live demo](https://code-autopsy-nine.vercel.app), analyze a real repo, and capture each of the six views above.
+2. Save them into `docs/screenshots/` using the exact filenames referenced (`overview.png`, `dependency-graph.png`, `call-graph.png`, `architecture.png`, `risks.png`, `chat.png`) — they'll render automatically, here and at the top of the README.
+3. Highest-impact single addition: a short screen-recording GIF of a full run (paste URL → live progress → graphs populating) saved as `docs/screenshots/demo.gif` and dropped in place of the hero image at the top.
 
 ## 🤝 Contributing
 
@@ -257,7 +291,7 @@ A short screen-recording GIF of an end-to-end run (paste URL → live progress �
 
 ## 📄 License
 
-No `LICENSE` file is currently published — all rights reserved by default. Add one (MIT is the common permissive default) if you want this reusable by others.
+Licensed under the [MIT License](LICENSE) — free to use, modify, and distribute with attribution.
 
 ---
 
