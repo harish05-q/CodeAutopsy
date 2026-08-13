@@ -56,15 +56,34 @@ class Orchestrator:
         self.ast_agent = AstAgent()
         self.graph_agent = GraphAgent()
         self.risk_service = RiskService()
-        self.embedding_agent = EmbeddingAgent(model_name=settings.EMBEDDING_MODEL)
-        self.architecture_agent = ArchitectureAgent(
-            api_key=settings.GROQ_API_KEY,
-            model_name=settings.GROQ_MODEL
-        )
-        self.documentation_agent = DocumentationAgent(
-            api_key=settings.GROQ_API_KEY,
-            model_name=settings.GROQ_MODEL
-        )
+        # Lazy-load heavy ML agents to avoid memory pressure on startup
+        self._embedding_agent = None
+        self._architecture_agent = None
+        self._documentation_agent = None
+
+    @property
+    def embedding_agent(self):
+        if self._embedding_agent is None:
+            self._embedding_agent = EmbeddingAgent(model_name=settings.EMBEDDING_MODEL)
+        return self._embedding_agent
+
+    @property
+    def architecture_agent(self):
+        if self._architecture_agent is None:
+            self._architecture_agent = ArchitectureAgent(
+                api_key=settings.GROQ_API_KEY,
+                model_name=settings.GROQ_MODEL
+            )
+        return self._architecture_agent
+
+    @property
+    def documentation_agent(self):
+        if self._documentation_agent is None:
+            self._documentation_agent = DocumentationAgent(
+                api_key=settings.GROQ_API_KEY,
+                model_name=settings.GROQ_MODEL
+            )
+        return self._documentation_agent
 
     async def run_analysis(self, db_session_factory, repository_id: str, run_id: str, groq_api_key: Optional[str] = None):
         """
@@ -74,8 +93,8 @@ class Orchestrator:
         # Override agents API keys if dynamic key is supplied
         api_key = groq_api_key or settings.GROQ_API_KEY
         if api_key:
-            self.architecture_agent = ArchitectureAgent(api_key=api_key, model_name=settings.GROQ_MODEL)
-            self.documentation_agent = DocumentationAgent(api_key=api_key, model_name=settings.GROQ_MODEL)
+            self._architecture_agent = ArchitectureAgent(api_key=api_key, model_name=settings.GROQ_MODEL)
+            self._documentation_agent = DocumentationAgent(api_key=api_key, model_name=settings.GROQ_MODEL)
 
         # Create output directory for this repository case
         output_dir = settings.ANALYSIS_DIR / repository_id
