@@ -2,6 +2,7 @@ import math
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import networkx as nx
+import re
 from pydantic import BaseModel
 
 class GraphNodeDto(BaseModel):
