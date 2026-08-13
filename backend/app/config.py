@@ -22,7 +22,8 @@ class Settings(BaseSettings):
     # LLM and API configuration
     GROQ_API_KEY: str = ""
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
-    EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
+    # Use a tiny embedding model to stay within 512MB RAM on Render free tier
+    EMBEDDING_MODEL: str = "sentence-transformers/paraphrase-MiniLM-L3-v2"
 
     # Constraints
     MAX_REPO_SIZE_MB: int = 100
