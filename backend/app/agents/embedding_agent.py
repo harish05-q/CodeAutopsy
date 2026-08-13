@@ -120,9 +120,15 @@ class EmbeddingAgent:
         if not all_chunks:
             return 0
 
-        # 2. Embed Chunks
+        # 2. Embed Chunks (batched to stay within 512MB RAM on Render free tier)
         texts = [chunk.formatted for chunk in all_chunks]
-        embeddings = self.model.encode(texts, show_progress_bar=False)
+        batch_size = 8
+        embeddings = []
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i + batch_size]
+            batch_embeddings = self.model.encode(batch, show_progress_bar=False, convert_to_numpy=True)
+            embeddings.append(batch_embeddings)
+        embeddings = np.vstack(embeddings)
 
         # 3. Create and Write FAISS Index
         import faiss
