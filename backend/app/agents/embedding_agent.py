@@ -132,7 +132,7 @@ class EmbeddingAgent:
 
         # 3. Create and Write FAISS Index
         import faiss
-        embeddings_np = np.array(embeddings).astype("float32")
+        embeddings_np = embeddings.astype("float32")
         dimension = embeddings_np.shape[1]
         
         index = faiss.IndexFlatL2(dimension)
