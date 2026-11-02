@@ -201,3 +201,21 @@ export async function sendChatMessage(
   if (!res.ok) throw new Error("Failed to send message to code assistant");
   return res.json();
 }
+
+export interface AnalysisStatus {
+  run_id: string;
+  repository_id: string;
+  status: string;
+  stage: string;
+  progress: number;
+  error_code: string | null;
+}
+
+/**
+ * Fetches the current status of an analysis run (fallback when SSE drops).
+ */
+export async function fetchAnalysisStatus(runId: string): Promise<AnalysisStatus> {
+  const res = await fetch(`${API_BASE}/analysis/${runId}`);
+  if (!res.ok) throw new Error("Failed to fetch analysis status");
+  return res.json();
+}
