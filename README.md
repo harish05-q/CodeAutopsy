@@ -44,7 +44,7 @@
 </p>
 
 <p align="center">
-  <sub><em>👆 Drop a hero screenshot or GIF at <code>docs/screenshots/overview.png</code> — see <a href="#-screenshots">Screenshots</a> below.</em></sub>
+  <!-- <sub><em>👆 Drop a hero screenshot or GIF at <code>docs/screenshots/overview.png</code> — see <a href="#-screenshots">Screenshots</a> below.</em></sub> -->
 </p>
 
 ---
