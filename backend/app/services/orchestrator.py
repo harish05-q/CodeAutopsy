@@ -133,7 +133,7 @@ class Orchestrator:
             # 2. Extract AST Symbols
             # ----------------------------------------------------
             logger.info(f"[{run_id}] Extracting AST symbols...")
-            ast_data = self.ast_agent.run(checkout_path, manifest.file_list)
+            ast_data = await asyncio.to_thread(self.ast_agent.run, checkout_path, manifest.file_list)
             
             ast_path = output_dir / "ast_data.json"
             with open(ast_path, "w", encoding="utf-8") as f:
@@ -163,7 +163,7 @@ class Orchestrator:
             # 3. Build Dependency & Call Graphs
             # ----------------------------------------------------
             logger.info(f"[{run_id}] Constructing graphs...")
-            dep_graph, call_graph = self.graph_agent.run(ast_data, checkout_path, manifest.file_list)
+            dep_graph, call_graph = await asyncio.to_thread(self.graph_agent.run, ast_data, checkout_path, manifest.file_list)
             
             dep_graph_path = output_dir / "dependency_graph.json"
             with open(dep_graph_path, "w", encoding="utf-8") as f:
@@ -179,7 +179,8 @@ class Orchestrator:
             # 4. Generate FAISS Embeddings and Analyze Risks
             # ----------------------------------------------------
             logger.info(f"[{run_id}] Embedding source code chunks...")
-            embedded_chunks = self.embedding_agent.run(
+            embedded_chunks = await asyncio.to_thread(
+                self.embedding_agent.run,
                 checkout_path=checkout_path,
                 python_files=manifest.file_list,
                 symbols=ast_data.get("symbols", []),
@@ -188,7 +189,7 @@ class Orchestrator:
 
             # Compute code quality findings & hotspots
             logger.info(f"[{run_id}] Performing static risk analysis...")
-            risk_report = self.risk_service.analyze(run_id, ast_data, dep_graph)
+            risk_report = await asyncio.to_thread(self.risk_service.analyze, run_id, ast_data, dep_graph)
             
             risk_path = output_dir / "risk_report.json"
             with open(risk_path, "w", encoding="utf-8") as f:
@@ -217,7 +218,8 @@ class Orchestrator:
             # 5. Architecture Inference & Documentation Authored via Groq
             # ----------------------------------------------------
             logger.info(f"[{run_id}] Running architecture pattern inference...")
-            arch_report = self.architecture_agent.run(
+            arch_report = await asyncio.to_thread(
+                self.architecture_agent.run,
                 manifest=manifest.model_dump(),
                 python_files=manifest.file_list,
                 dependency_graph_nodes=dep_graph.get("nodes", [])
@@ -240,7 +242,8 @@ class Orchestrator:
                 json.dump(arch_report.model_dump(), f, indent=2)
 
             logger.info(f"[{run_id}] Generating module summaries and onboarding guides...")
-            summaries, readme, onboarding = self.documentation_agent.run(
+            summaries, readme, onboarding = await asyncio.to_thread(
+                self.documentation_agent.run,
                 manifest=manifest.model_dump(),
                 ast_data=ast_data
             )

@@ -154,9 +154,32 @@ async def get_analysis_events(run_id: str):
         # Get subscriber queue
         queue = sse_manager.subscribe(run_id)
         try:
+            # Send the current state first: the background task starts before the
+            # client connects, so earlier events (or even completion) may already be missed.
+            async with AsyncSessionLocal() as session:
+                res = await session.execute(select(AnalysisRun).where(AnalysisRun.id == run_id))
+                run = res.scalar_one_or_none()
+            if run:
+                snapshot = {
+                    "run_id": run.id,
+                    "stage": run.stage,
+                    "progress": run.progress,
+                    "status": run.status,
+                    "error_code": run.error_code
+                }
+                yield f"event: stage.progress\ndata: {json.dumps(snapshot)}\n\n"
+                if run.status in ("completed", "failed"):
+                    return
             while True:
-                item = await queue.get()
+                try:
+                    item = await asyncio.wait_for(queue.get(), timeout=15)
+                except asyncio.TimeoutError:
+                    # Keep-alive comment so proxies (Render/Vercel) don't drop idle streams
+                    yield ": ping\n\n"
+                    continue
                 yield f"event: {item['event']}\ndata: {json.dumps(item['data'])}\n\n"
+                if item["data"].get("status") in ("completed", "failed"):
+                    return
         except Exception:
             pass
         finally:

@@ -13,7 +13,7 @@ import { Architecture } from "./views/architecture";
 import { Onboarding } from "./views/onboarding";
 import { Risks } from "./views/risks";
 import { Chat } from "./views/chat";
-import { fetchOverview, analyzeRepository, API_BASE, type OverviewData } from "./api-client";
+import { fetchOverview, analyzeRepository, fetchAnalysisStatus, API_BASE, type OverviewData } from "./api-client";
 
 const icons = { 
   overview: BookOpen, 
@@ -118,10 +118,36 @@ export function Dashboard() {
       });
 
       eventSource.onerror = (err) => {
-        console.error("SSE Connection error:", err);
+        console.error("SSE Connection error, falling back to polling:", err);
         eventSource.close();
-        setIsAnalyzing(false);
-        setErrorMsg("Lost connection to analysis server.");
+        // The stream can drop (proxy timeouts, server restarts); keep tracking via the status endpoint
+        let failures = 0;
+        const poll = async () => {
+          try {
+            const run = await fetchAnalysisStatus(runId);
+            failures = 0;
+            setProgress(run.progress);
+            setStage(run.stage);
+            if (run.status === "completed") {
+              setIsAnalyzing(false);
+              setNewCase(false);
+              loadRepository(repositoryId);
+              return;
+            } else if (run.status === "failed") {
+              setIsAnalyzing(false);
+              setErrorMsg(run.error_code || "Analysis failed.");
+              return;
+            }
+          } catch (e) {
+            if (++failures >= 5) {
+              setIsAnalyzing(false);
+              setErrorMsg("Lost connection to analysis server.");
+              return;
+            }
+          }
+          setTimeout(poll, 3000);
+        };
+        poll();
       };
 
     } catch (err: any) {
